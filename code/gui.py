@@ -10,7 +10,7 @@ class App:
     def __init__(self,r):
         self.mode="toy"
         self.currentText=""
-        self.height=300
+        self.height=220
         self.width=600
         self.root=r
         self.panels=[]
@@ -22,7 +22,7 @@ class App:
 
         selectButton = tk.Button(self.panels[0], text="Select File", command=self.selectFile)
         selectButton.place(x=5, y=5, width=150, height=100)
-        startButton=tk.Button(self.panels[0],text= "Start prediction", comma=self.runModel)
+        startButton=tk.Button(self.panels[0],text= "Start Model", comma=self.runModel)
         startButton.place(x=5, y=110, width=150, height=100)
 
         selectToy= tk.Button(self.panels[0], text="ToyModel", command=self.selectToy)
@@ -31,22 +31,7 @@ class App:
         selectFst.place(x=160, y=71, width=80, height=60)
         selectGan= tk.Button(self.panels[0], text="ToyGan", command=self.selectGan)
         selectGan.place(x=160, y=137, width=80, height=60)
-
-        self.play_button = tk.Button(self.panels[0], text="Play", command=self.play_audio, state=tk.DISABLED)
-        self.play_button.place(x=5, y=220, width=40, height=20)
-
-        self.pause_button = tk.Button(self.panels[0], text="Pause", command=self.pause_audio, state=tk.DISABLED)
-        self.pause_button.place(x=50, y=220, width=40, height=20)
-
-        self.stop_button = tk.Button(self.panels[0], text="Stop", command=self.stop_audio, state=tk.DISABLED)
-        self.stop_button.place(x=95, y=220, width=40, height=20)
-
-
-
-
-
-
-        #select_button.pack()
+        return
 
     def gridLayer(self):
         # Create widgets for the grid layer
@@ -101,8 +86,9 @@ class App:
             inShape=(1,1291, 128,1)
             m=tG.toyGan(dimensions=inShape)
             m.loadModel("models\\toyGan")
-            gen=m.generate()
+            gen=m.generate(filename="newSample.wav")
             self.audio_file = gen[1]
+            self.panels[1].config(text=f"done generating file: \n{gen[1]}")
 
         return
     def openSong(self):
@@ -112,27 +98,7 @@ class App:
         self.panels[1].config(text=disp)
 
         return
-    def play_audio(self):
-        if self.audio_file:
-            self.sound = ttk.Sound(self.audio_file)
-            self.sound.play()
-            self.play_button.config(state=tk.DISABLED)
-            self.pause_button.config(state=tk.NORMAL)
-            self.stop_button.config(state=tk.NORMAL)
-
-    def pause_audio(self):
-        self.sound.pause()
-        self.pause_button.config(text="Resume", command=self.resume_audio)
-
-    def resume_audio(self):
-        self.sound.resume()
-        self.pause_button.config(text="Pause", command=self.pause_audio)
-
-    def stop_audio(self):
-        self.sound.stop()
-        self.play_button.config(state=tk.NORMAL)
-        self.pause_button.config(state=tk.DISABLED)
-        self.stop_button.config(state=tk.DISABLED)
+   
 
             
 

@@ -9,6 +9,7 @@ import soundfile as sf
 from tensorflow.keras import layers, models
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.losses import BinaryCrossentropy
+from scipy.io.wavfile import write
 
 class toyGan(models.Model):
     def __init__(self,dimensions,*args, **kwargs):
@@ -137,7 +138,8 @@ class toyGan(models.Model):
         generated=self.gen(noise)
         generated=np.squeeze(generated, axis=3)
         recSignal = lb.feature.inverse.mel_to_audio(generated[0])
-        sf.write(filename, recSignal, frequency, 'PCM_24')
+        #sf.write(filename, recSignal, frequency, 'PCM_24')
+        write(filename, frequency, recSignal)
         return recSignal,filename
     def save(self,folderPath):
     
