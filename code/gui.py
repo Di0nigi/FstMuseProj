@@ -9,14 +9,15 @@ from tkinter import ttk
 class App:
     def __init__(self,r):
         self.mode="toy"
-        self.height=500
+        self.currentText=""
+        self.height=300
         self.width=600
         self.root=r
         self.panels=[]
         self.root.geometry(f"{self.width}x{self.height}")
         self.root.title("FstMuse")
         self.gridLayer()
-        #self.panels[2].config(bg="gray", font=("Courier New", 15),anchor="nw",justify="left")
+        self.panels[1].config(bg="gray", font=("Courier New", 15),anchor="nw",justify="left")
         #self.panels[3].config(bg="gray", font=("Courier New", 15),anchor="nw",justify="left")
 
         selectButton = tk.Button(self.panels[0], text="Select File", command=self.selectFile)
@@ -25,21 +26,20 @@ class App:
         startButton.place(x=5, y=110, width=150, height=100)
 
         selectToy= tk.Button(self.panels[0], text="ToyModel", command=self.selectToy)
-        selectToy.place(x=160, y=5, width=80, height=50)
+        selectToy.place(x=160, y=5, width=80, height=60)
         selectFst= tk.Button(self.panels[0], text="FstMuse", command=self.selectFst)
-        selectFst.place(x=160, y=65, width=80, height=50)
+        selectFst.place(x=160, y=71, width=80, height=60)
         selectGan= tk.Button(self.panels[0], text="ToyGan", command=self.selectGan)
-        selectGan.place(x=160, y=130, width=80, height=50)
+        selectGan.place(x=160, y=137, width=80, height=60)
 
         self.play_button = tk.Button(self.panels[0], text="Play", command=self.play_audio, state=tk.DISABLED)
-        self.play_button.place(x=10, y=10, width=40, height=20)
+        self.play_button.place(x=5, y=220, width=40, height=20)
 
         self.pause_button = tk.Button(self.panels[0], text="Pause", command=self.pause_audio, state=tk.DISABLED)
-        self.pause_button.place(x=10, y=40, width=40, height=20)
-
+        self.pause_button.place(x=50, y=220, width=40, height=20)
 
         self.stop_button = tk.Button(self.panels[0], text="Stop", command=self.stop_audio, state=tk.DISABLED)
-        self.stop_button.place(x=10, y=80, width=40, height=20)
+        self.stop_button.place(x=95, y=220, width=40, height=20)
 
 
 
@@ -51,11 +51,11 @@ class App:
     def gridLayer(self):
         # Create widgets for the grid layer
         label = tk.Label(self.root,bg="gray", fg="black")
-        label.place(x=0, y=0, width=(self.width//2), height=(self.height//2))
+        label.place(x=0, y=0, width=(self.width//2), height=self.height)
         self.panels.append(label)
         
         label2 = tk.Label(self.root,bg="gray", fg="black")
-        label2.place(x=(self.width//2), y=(self.height//2), width=(self.width//2), height=(self.height//2))
+        label2.place(x=(self.width//2), y=0, width=(self.width//2), height=self.height)
         self.panels.append(label2)
                 
             
@@ -95,7 +95,8 @@ class App:
             m=fM.fstMuse(dim=dims,classes=7)
             m.load("models\\fstMuse35")
             pred=m.predict([self.track])[0]
-            self.panels[1].config(text=f"{self.track.title} is {pred}")
+            self.panels[1].config(text=f"{self.currentText}\n \n \nprediction: \n{self.track.title} is {pred}")
+
         elif self.mode=="gan":
             inShape=(1,1291, 128,1)
             m=tG.toyGan(dimensions=inShape)
@@ -107,6 +108,7 @@ class App:
     def openSong(self):
         self.track=dP.loadAndParse([self.filePath])[0]
         disp=f"title: {self.track.title}\ngenre: {self.track.label}"
+        self.currentText=disp
         self.panels[1].config(text=disp)
 
         return
